@@ -1,0 +1,21 @@
+Package: RAnalytics
+Type: Package
+Title: Connect to Google Analytics API for data analysis
+Description: Provides functions that allow for convenient working
+    with the Google Analytics API.
+Version: 0.1.0
+Date: 2015-12-17
+Authors@R: c(person("Cody L Marquart", role = c("aut", "cre"), email="cody.marquart@wisc.edu"))
+Depends: R (>= 3.1.0)
+License: GPL (>= 2)
+LazyData: true
+Packaged: 2015-12-17 12:02:36 UTC; clmarquart
+Author: Cody L Marquart [aut, cre]
+Maintainer: Cody L Marquart <cody.marquart@wisc.edu>
+NeedsCompilation: no
+Imports: devtools,
+    httr
+Suggests: testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
