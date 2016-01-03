@@ -8,7 +8,18 @@
 #accountID = "39236781", webID = "UA-39236781-3"
 #ga$accounts()[[2]]$id, ga$accounts()[[2]]$webProperties[[4]]$id
 #
-analytics.list.dimensions = function (accessToken, accountID = NULL, webID = NULL, startIndex = 1, maxResults = 10) {
+analytics.list.dimensions = function (accessToken, account = NULL, accountID = NULL, webID = NULL, startIndex = 1, maxResults = 10) {
+  if(!is.null(account)) {
+    if(is.null(accountID)) {
+      accountID = account$accountID;
+    }
+    if(is.null(webID)) {
+      webID = account$id;
+    }
+  }
+  print(account);
+  print(accountID);
+  print(webID);
   query <- paste(
     "https://www.googleapis.com/analytics/v3/management/accounts/", accountID, "/webproperties/", webID, "/customDimensions", 
     sep = ""
@@ -25,7 +36,15 @@ analytics.list.dimensions = function (accessToken, accountID = NULL, webID = NUL
 
   #return(content(req)$items);
   #return(rownames(list.table(content(req)$items, id)));
+
   dims = content(req)$items;
 
-  return(cbind(rownames(list.table(dims, name)),rownames(list.table(dims, id))));
+  dimFrame = data.frame();
+  for(item in dims) {
+    dimFrame = rbind(dimFrame, data.frame(name=item$name, id=item$id))
+  }
+  rownames(dimFrame) <- dimFrame$id;
+
+  return(dimFrame);
+  #return(cbind(rownames(list.table(dims, name)),rownames(list.table(dims, id))));
 }

@@ -46,7 +46,7 @@ analytics.query = function(
 
   start = 1;
   results = list();
-  
+
   queryURL = "https://www.googleapis.com/analytics/v3/data/ga";
   repeat {
     result = list();
@@ -62,7 +62,7 @@ analytics.query = function(
       'max-results'= maxResults,
       'access_token'= accessToken #ga_token$credentials$access_token
     );
-    
+
     result$req <- GET(queryURL, query = queryList);
     stop_for_status(result$req);
 
@@ -86,8 +86,22 @@ analytics.query = function(
   }
   results$merged = mergedResults;
   
-  if(is.null(columnNames)) {
-    print("Setting column names is not yet supported.");
+  if(!is.null(columnNames)) {
+    newColnames = list();
+    newColnameIndex = 1;
+
+    for(col in colnames(mergedResults)) {
+      colName = levels(factor(columnNames[c(col),]$name));
+
+      if(length(colName) > 0) {
+        newColnames[[newColnameIndex]] = colName;
+      } else {
+        newColnames[[newColnameIndex]] = col;
+      }
+      newColnameIndex = newColnameIndex + 1;
+    }
+
+    colnames(results$merged) <- newColnames;
   }
   
   return(results);

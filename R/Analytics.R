@@ -1,4 +1,7 @@
 ###
+# libaries: rjson, rlist, httr
+#
+#'
 #'
 #' @export
 GA = function(json = NULL, jsonText = NULL, set_global = FALSE, set_global_var = "GA") {
@@ -7,7 +10,7 @@ GA = function(json = NULL, jsonText = NULL, set_global = FALSE, set_global_var =
 
 GA_object = function(json = NULL, jsonText = NULL, set_global = FALSE, set_global_var = "GA") {
   self <- local({
-    
+
     connection <- analytics.connect(json, jsonText, set_global, set_global_var);
 
     reconnect <- function(json = NULL, jsonText = NULL, set_global = FALSE, set_global_var = "GA", useCache = FALSE) {
@@ -24,8 +27,8 @@ GA_object = function(json = NULL, jsonText = NULL, set_global = FALSE, set_globa
 
     dimensions <- NULL;
     
-    getDimensions <- function(accountID, webID) {
-      dimensions = analytics.list.dimensions(connection, accountID, webID);
+    getDimensions <- function(account = NULL, accountID = NULL, webID = NULL) {
+      dimensions = analytics.list.dimensions(connection, account = account, accountID = accountID, webID = webID);
       return(dimensions);
     };
 
@@ -35,7 +38,9 @@ GA_object = function(json = NULL, jsonText = NULL, set_global = FALSE, set_globa
     
     query <- function(
       accessToken = connection,
-      accountID, webID,
+      account = NULL,
+      accountID = NULL, 
+      webID = NULL,
       ids = "113385228",
       startDate = "30daysAgo",
       endDate = "today",
@@ -47,17 +52,21 @@ GA_object = function(json = NULL, jsonText = NULL, set_global = FALSE, set_globa
       maxResults = 1000
     ) {
       if(is.null(dimensions)) {
-        dims = getDimensions(accountID, webID);
+        dims = getDimensions(account, accountID, webID);
       }
 
-      return(analytics.query(accessToken,ids,startDate,endDate,dims[,2],metrics,columnNames,uniqueBy,startIndex,maxResults));
+      return(analytics.query(accessToken,ids,startDate,endDate,dims = levels(dims$id),metrics,columnNames,uniqueBy,startIndex,maxResults));
     };
 
     accounts <- analytics.accounts(connection);
 
     getAccounts <- function(accessToken = connection) {
       return(analytics.accounts(accessToken));
-    }
+    };
+    
+    accountProfiles <- function(account) {
+      return(analytics.account.profiles(account));
+    };
     
     environment();
   });
