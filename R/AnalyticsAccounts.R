@@ -6,19 +6,11 @@ analytics.accounts = function (accessToken) {
   queryList = list(
     'access_token'= accessToken
   );
-  
+
   req <- GET(query, query = queryList);
   stop_for_status(req);
-  
+
   accts = parseAccounts(content(req)$items);
-  #print((accts[,9]))
-  #list.iter(accts, print(.))
-  for(a in accts) {
-    #print(a[9])
-    #for(p in a[9]) {
-     #print(p);
-    #}
-  }
 
   return(accts);
 }
@@ -42,7 +34,6 @@ analytics.account.profiles = function(account, context = FALSE) {
 }
 
 parseAccounts = function(accts) {
-  
   acctsList = data.frame();
   
   acctsTable = as.data.table(t(as.data.table(accts)));
@@ -52,8 +43,6 @@ parseAccounts = function(accts) {
     acctList = do.call(rbind, lapply(acct$webProperties, function(x) {
       p = list.stack(x$profiles);
       rownames(p) <- list.names(x$profiles[[1]][[1]]);
-      pDF = as.data.table(p);
-      colnames(pDF) = colnames(p);
       x$profiles = as.data.table(t(as.data.table(t(p))));
       colnames(x$profiles) = colnames(p);
       return(x);

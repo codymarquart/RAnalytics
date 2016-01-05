@@ -49,13 +49,16 @@ GA_object = function(json = NULL, jsonText = NULL, set_global = FALSE, set_globa
       columnNames = dimensions[,1],
       uniqueBy = NULL,
       startIndex = 1,
-      maxResults = 1000
+      maxResults = 1000,
+      appendEvents = TRUE
     ) {
-      if(is.null(dimensions)) {
+      if(is.null(dims)) {
         dims = getDimensions(account, accountID, webID);
+        return(analytics.query(accessToken,ids,startDate,endDate,dims = levels(dims$id),metrics,columnNames,uniqueBy,startIndex,maxResults, appendEvents));
+      } else {
+        return(analytics.query(accessToken,ids,startDate,endDate,dims = dims,metrics,columnNames,uniqueBy,startIndex,maxResults, appendEvents));
       }
 
-      return(analytics.query(accessToken,ids,startDate,endDate,dims = levels(dims$id),metrics,columnNames,uniqueBy,startIndex,maxResults));
     };
 
     accounts <- analytics.accounts(connection);

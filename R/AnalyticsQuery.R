@@ -14,12 +14,13 @@ analytics.query = function(
   ids = NULL,
   startDate = "30daysAgo",
   endDate = "today",
-  dims = c("ga:eventLabel"),
+  dims = c("ga:eventAction", "ga:eventLabel"),
   metrics = c("ga:eventValue"),
   columnNames = NULL,
   uniqueBy = NULL,
   startIndex = 1,
-  maxResults = 1000
+  maxResults = 1000,
+  appendEvents = TRUE
 ) {
   if(is.null(accessToken)){
     accessToken = getToken();
@@ -34,15 +35,17 @@ analytics.query = function(
     return();
   }
   ids = paste("ga:", ids, sep = "");
-  dims = append(dims, c("ga:eventAction", "ga:eventLabel"));
+  
+  if(appendEvents == TRUE) {
+    dims = append(dims, c("ga:eventAction", "ga:eventLabel"));
+  }
   
   # TODO Maybe allow for the user to select the columns at this point
   if(is.null(uniqueBy) && length(dims) > 7) {
-    print("In order to use more than 7 dimensions, use uniqueBy so multiple queries can be merged together.");
+    print("WARNING: In order to use more than 7 dimensions, use uniqueBy so multiple queries can be merged together.");
+    print(dims);
     return();
-  } else if(!is.null(uniqueBy) && length(dims) > 7) {
-    
-  }
+  } else if(!is.null(uniqueBy) && length(dims) > 7) { }
 
   start = 1;
   results = list();
@@ -57,10 +60,10 @@ analytics.query = function(
       'start-date' = startDate,
       'end-date'= endDate,
       'dimensions'= paste(result$dimensionsUsed, collapse=","),
-      'metrics'= paste(metrics, collapse=","), # was a list -> metrics = [ ga:eventValue ]
+      'metrics'= paste(metrics, collapse=","),
       'start-index'= startIndex,
       'max-results'= maxResults,
-      'access_token'= accessToken #ga_token$credentials$access_token
+      'access_token'= accessToken
     );
 
     result$req <- GET(queryURL, query = queryList);
