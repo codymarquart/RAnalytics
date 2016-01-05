@@ -67,11 +67,10 @@ GA_object = function(json = NULL, jsonText = NULL, set_global = FALSE, set_globa
     accountProfiles <- function(account) {
       return(analytics.account.profiles(account));
     };
-    
+
     environment();
   });
   
   lockEnvironment(self, TRUE)
   structure(self, class=c("GA", "egr", class(self)))
 }
-

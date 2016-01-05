@@ -17,9 +17,7 @@ analytics.list.dimensions = function (accessToken, account = NULL, accountID = N
       webID = account$id;
     }
   }
-  print(account);
-  print(accountID);
-  print(webID);
+
   query <- paste(
     "https://www.googleapis.com/analytics/v3/management/accounts/", accountID, "/webproperties/", webID, "/customDimensions", 
     sep = ""

@@ -11,7 +11,7 @@
 #'' @export
 analytics.query = function(
   accessToken = NULL,
-  ids = "113385228",
+  ids = NULL,
   startDate = "30daysAgo",
   endDate = "today",
   dims = c("ga:eventLabel"),
@@ -23,7 +23,7 @@ analytics.query = function(
 ) {
   if(is.null(accessToken)){
     accessToken = getToken();
-    
+
     if(is.null(accessToken)) {
       print("FAILED: No Token.");
       return();
@@ -34,9 +34,9 @@ analytics.query = function(
     return();
   }
   ids = paste("ga:", ids, sep = "");
+  dims = append(dims, c("ga:eventAction", "ga:eventLabel"));
   
-  dims = append(dims, c("ga:eventAction", "ga:eventLabel"))
-  
+  # TODO Maybe allow for the user to select the columns at this point
   if(is.null(uniqueBy) && length(dims) > 7) {
     print("In order to use more than 7 dimensions, use uniqueBy so multiple queries can be merged together.");
     return();
