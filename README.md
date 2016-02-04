@@ -1,29 +1,21 @@
 # RAnalytics
 
 ###
-# Step 1: Authorize the connection to the API
-###
+## Step 1: Authorize the connection to the API
 ga = GA("./data/testing.json")
 
 ###
-# Step 2: View accounts to find the correct one to query
-# -> Accounts will vary by user
-###
+## Step 2: View accounts to find the correct one to query
 View(ga$accounts);
 
 ###
-# Step 3: Obtain the custom dimensions 
-# -> Using ga$account[12] for this example
-###
+## Step 3: Obtain the custom dimensions 
 gaDims = ga$getDimensions(accountID = ga$accounts[12]$accountID, webID = ga$accounts[12]$id)
 
 ###
-# Step 4: Run the query
-# -> Again using ga$account[12]
-#
-# By default, ga$query pulls the data from the last 30 days
-#
-###
+## Step 4: Run the query
+
+//By default, ga$query pulls the data from the last 30 days
 data = ga$query(
   accountID = ga$accounts[12]$accountID, 
   webID = ga$accounts[12]$id, 
@@ -33,6 +25,5 @@ data = ga$query(
 )
 
 ###
-# Step 5: View the results
-###
+## Step 5: View the results
 View(data$merged)
