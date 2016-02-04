@@ -1,20 +1,10 @@
 ### Query the Analytics API
-#
-#' @param accessToken 
-#' @param ids
-#' @param startDate
-#' @param endDate
-#' @param dims
-#' @param metrics
-#' @param startIndex
-#' @param maxResults
-#'' @export
 analytics.query = function(
   accessToken = NULL,
   ids = NULL,
   startDate = "30daysAgo",
   endDate = "today",
-  dims = c("ga:eventAction", "ga:eventLabel"),
+  dims = c("ga:eventAction"),
   metrics = c("ga:eventValue"),
   columnNames = NULL,
   uniqueBy = NULL,
@@ -37,13 +27,12 @@ analytics.query = function(
   ids = paste("ga:", ids, sep = "");
   
   if(appendEvents == TRUE) {
-    dims = append(dims, c("ga:eventAction", "ga:eventLabel"));
+    dims = append(dims, c("ga:eventAction", "ga:eventLabel", "ga:eventCategory"));
   }
-  
+
   # TODO Maybe allow for the user to select the columns at this point
   if(is.null(uniqueBy) && length(dims) > 7) {
     print("WARNING: In order to use more than 7 dimensions, use uniqueBy so multiple queries can be merged together.");
-    print(dims);
     return();
   } else if(!is.null(uniqueBy) && length(dims) > 7) { }
 
@@ -53,8 +42,9 @@ analytics.query = function(
   queryURL = "https://www.googleapis.com/analytics/v3/data/ga";
   repeat {
     result = list();
-    result$dimensionsUsed = list.cases(append(uniqueBy, Filter(function(x) { return(x != "NA"); }, dims[start:(start+(6 - length(uniqueBy)))])));
+    result$dimensionsUsed = rlist::list.cases(append(uniqueBy, Filter(function(x) { return(x != "NA"); }, dims[start:(start+(6 - length(uniqueBy)))])));
     start = start + (7 - length(uniqueBy));
+    print(result$dimensionsUsed)
     queryList = list(
       'ids'= ids,
       'start-date' = startDate,
@@ -65,18 +55,20 @@ analytics.query = function(
       'max-results'= maxResults,
       'access_token'= accessToken
     );
+    #print(queryURL);
+    #print(queryList);
 
-    result$req <- GET(queryURL, query = queryList);
-    stop_for_status(result$req);
+    result$req <- httr::GET(queryURL, query = queryList);
+    httr::stop_for_status(result$req);
 
     df = NULL;
-    if(!is.null(content(result$req)$rows)) {
-      df <- do.call(rbind.data.frame, content(result$req)$rows);
-      colnames(df) = sapply(content(result$req)$columnHeaders, function(x) x[1]);
+    if(!is.null(httr::content(result$req)$rows)) {
+      df <- do.call(rbind.data.frame, httr::content(result$req)$rows);
+      colnames(df) = sapply(httr::content(result$req)$columnHeaders, function(x) x[1]);
     }
     result$data <- df;
 
-    results = list.append(results, result);
+    results = rlist::list.append(results, result);
     if(start > length(dims)) {
       break;
     }
@@ -103,8 +95,10 @@ analytics.query = function(
       }
       newColnameIndex = newColnameIndex + 1;
     }
-
-    colnames(results$merged) <- newColnames;
+    
+    if(length(newColnames) > 0) {
+      colnames(results$merged) <- newColnames;
+    }
   }
   
   return(results);

@@ -1,11 +1,4 @@
 ### Connect to Google API OAuth
-#
-#' @param set_global Boolean, when true, sets the resulting 
-#'' @export
-#' @importFrom httr oauth_endpoint
-#' @importFrom httr oauth_app
-#' @importFrom httr oauth2.0_token
-#' @importFrom json fromJSON
 analytics.connect = function(json = NULL, jsonText = NULL, set_global = FALSE, set_global_var = "GA") {
   if(is.null(json) && is.null(jsonText)) {
     print("Must provide a JSON credentials file: https://console.developers.google.com/apis/credentials")
@@ -21,7 +14,7 @@ analytics.connect = function(json = NULL, jsonText = NULL, set_global = FALSE, s
       return();
     }
   } else if (!is.null(jsonText)) {
-    fromJSON(jsonText)
+    rjson::fromJSON(jsonText)
   } else {
     print("Unable to parse JSON from either `json` or `jsonText`")
     return()
@@ -37,12 +30,12 @@ analytics.connect = function(json = NULL, jsonText = NULL, set_global = FALSE, s
     return();
   }
   
-  ga <- oauth_endpoint( authorize = endpointAuthorize, access = endpointAccess);
-  myapp <- oauth_app("ga",
+  ga <- httr::oauth_endpoint( authorize = endpointAuthorize, access = endpointAccess);
+  myapp <- httr::oauth_app("ga",
     key = clientID, # Client ID
     secret = clientSecret # Client Secret
   );
-  ga_tokens <- oauth2.0_token(ga, myapp, scope=c("https://www.googleapis.com/auth/analytics", "https://www.googleapis.com/auth/analytics.edit"), cache = FALSE);
+  ga_tokens <- httr::oauth2.0_token(ga, myapp, scope=c("https://www.googleapis.com/auth/analytics", "https://www.googleapis.com/auth/analytics.edit"), cache = FALSE);
   
   if(set_global == TRUE) {
     GA = NULL;
@@ -57,12 +50,7 @@ analytics.connect = function(json = NULL, jsonText = NULL, set_global = FALSE, s
   return(getToken(ga_tokens, "access_token"));
 }
 
-### Retrieve token 
-#'
-#' \code{getToken} Returns the token for the provided
-#' tokens object: 
-#'
-#'' @export
+### Retrieve token
 getToken = function(tokens = NULL, token = "access_token", global_var = "GA") {
   if(is.null(tokens)) {
     GA = get("GA", envir = .GlobalEnv);

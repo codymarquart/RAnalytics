@@ -1,8 +1,7 @@
 ###
 # libaries: rjson, rlist, httr
 #
-#'
-#'
+#' @title Main function for connection to Google Analytics
 #' @export
 GA = function(json = NULL, jsonText = NULL, set_global = FALSE, set_global_var = "GA") {
   GA_object(json, jsonText, set_global, set_global_var);
@@ -54,6 +53,7 @@ GA_object = function(json = NULL, jsonText = NULL, set_global = FALSE, set_globa
     ) {
       if(is.null(dims)) {
         dims = getDimensions(account, accountID, webID);
+        print(dims);
         return(analytics.query(accessToken,ids,startDate,endDate,dims = levels(dims$id),metrics,columnNames,uniqueBy,startIndex,maxResults, appendEvents));
       } else {
         return(analytics.query(accessToken,ids,startDate,endDate,dims = dims,metrics,columnNames,uniqueBy,startIndex,maxResults, appendEvents));

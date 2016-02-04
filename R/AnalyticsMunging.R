@@ -1,9 +1,4 @@
-#library(devtools);
-#library(httr);
-
 ### Process the result of data pulls
-#
-#'' @export
 process = function() {
   LiveUsers = read.csv(file = '~/Downloads/live-users.csv')
   colnames(LiveUsers) <- c("UserID", "username");
@@ -31,17 +26,15 @@ getMetaTab = function() {
 }
 
 ### Convert the query results into a data frame
-#
-#'' @export
 viewResults = function(x, req = "req") {
   if(is.null(x)) {
     x = get(req, envir = .GlobalEnv);
   }
   
   df = NULL;
-  if(!is.null(content(x)$rows)) {
-    df <- do.call(rbind.data.frame, content(x)$rows);
-    colnames(df) = sapply(content(x)$columnHeaders, function(x) x[1]);
+  if(!is.null(httr::content(x)$rows)) {
+    df <- do.call(rbind.data.frame, httr::content(x)$rows);
+    colnames(df) = sapply(httr::content(x)$columnHeaders, function(x) x[1]);
   }
   
   return(df);

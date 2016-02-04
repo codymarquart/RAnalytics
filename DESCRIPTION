@@ -1,5 +1,6 @@
 Package: RAnalytics
 Type: Package
+Name: RAnalytics
 Title: Connect to Google Analytics API for data analysis
 Description: Provides functions that allow for convenient working
     with the Google Analytics API.
@@ -14,7 +15,10 @@ Author: Cody L Marquart [aut, cre]
 Maintainer: Cody L Marquart <cody.marquart@wisc.edu>
 NeedsCompilation: no
 Imports: devtools,
-    httr
+    httr,
+    rjson,
+    rlist,
+    data.table
 Suggests: testthat,
     knitr,
     rmarkdown

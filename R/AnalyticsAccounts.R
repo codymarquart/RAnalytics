@@ -7,10 +7,10 @@ analytics.accounts = function (accessToken) {
     'access_token'= accessToken
   );
 
-  req <- GET(query, query = queryList);
-  stop_for_status(req);
+  req <- httr::GET(query, query = queryList);
+  httr::stop_for_status(req);
 
-  accts = parseAccounts(content(req)$items);
+  accts = parseAccounts(httr::content(req)$items);
 
   return(accts);
 }
@@ -36,20 +36,20 @@ analytics.account.profiles = function(account, context = FALSE) {
 parseAccounts = function(accts) {
   acctsList = data.frame();
   
-  acctsTable = as.data.table(t(as.data.table(accts)));
+  acctsTable = data.table::as.data.table(t(data.table::as.data.table(accts)));
   colnames(acctsTable) = names(accts[[1]]);
     
   for(acct in accts) {
     acctList = do.call(rbind, lapply(acct$webProperties, function(x) {
-      p = list.stack(x$profiles);
-      rownames(p) <- list.names(x$profiles[[1]][[1]]);
-      x$profiles = as.data.table(t(as.data.table(t(p))));
+      p = rlist::list.stack(x$profiles);
+      rownames(p) <- rlist::list.names(x$profiles[[1]][[1]]);
+      x$profiles = data.table::as.data.table(t(data.table::as.data.table(t(p))));
       colnames(x$profiles) = colnames(p);
       return(x);
     }));
     
     acctList = cbind(name = acct$name, accountID = acct$id, acctList);
-    acctsList = rbind( as.data.table(acctList), acctsList );
+    acctsList = rbind( data.table::as.data.table(acctList), acctsList );
   }
   
   return(acctsList)

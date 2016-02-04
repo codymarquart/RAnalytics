@@ -1,6 +1,4 @@
 ### Save results as file
-#'
-#'' @export
 analytics.results.save = function(x, file = "./data/saved.csv", type = tools::file_ext(file)) {
   print(paste("Merged: ", is.null(x$merged)));
   
