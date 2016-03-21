@@ -2,11 +2,15 @@
 
 ###
 ## Step 1: Authorize the connection to the API
-ga = GA("./data/testing.json")
+ga = GA("./tools/testing.json")
+-OR-
+gaToken = analytics.connect("./tools/testing.json")
 
 ###
 ## Step 2: View accounts to find the correct one to query
 View(ga$accounts);
+-OR-
+gaAccounts = analytics.accounts(gaToken);
 
 ###
 ## Step 3: Obtain the custom dimensions 
@@ -15,7 +19,7 @@ gaDims = ga$getDimensions(accountID = ga$accounts[12]$accountID, webID = ga$acco
 ###
 ## Step 4: Run the query
 
-//By default, ga$query pulls the data from the last 30 days
+\# By default, ga$query pulls the data from the last 30 days
 data = ga$query(
   accountID = ga$accounts[12]$accountID, 
   webID = ga$accounts[12]$id, 

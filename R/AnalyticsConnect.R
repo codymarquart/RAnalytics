@@ -1,5 +1,14 @@
-### Connect to Google API OAuth
-analytics.connect = function(json = NULL, jsonText = NULL, set_global = FALSE, set_global_var = "GA") {
+#' @title analytics.connect
+#' @description Connect to Google API OAuth
+#' @param json File location
+#' @param jsonText String representation of JSON
+#' @import rjson httr
+#' @export
+### 
+analytics.connect = function(
+  json = NULL,
+  jsonText = NULL
+) {
   if(is.null(json) && is.null(jsonText)) {
     print("Must provide a JSON credentials file: https://console.developers.google.com/apis/credentials")
     return();
@@ -8,7 +17,7 @@ analytics.connect = function(json = NULL, jsonText = NULL, set_global = FALSE, s
   jsonSettings = NULL;
   if(!is.null(json)) {
     if(file.exists(json)) {
-      jsonSettings = fromJSON(file = json);
+      jsonSettings = rjson::fromJSON(file = json);
     } else {
       print("Provided file doesn't exist");
       return();
@@ -35,22 +44,16 @@ analytics.connect = function(json = NULL, jsonText = NULL, set_global = FALSE, s
     key = clientID, # Client ID
     secret = clientSecret # Client Secret
   );
-  ga_tokens <- httr::oauth2.0_token(ga, myapp, scope=c("https://www.googleapis.com/auth/analytics", "https://www.googleapis.com/auth/analytics.edit"), cache = FALSE);
-  
-  if(set_global == TRUE) {
-    GA = NULL;
-    if(!exists(set_global_var, envir = .GlobalEnv)) {
-      GA = list();
-    }
-
-    GA$tokens = ga_tokens;
-    assign(set_global_var, GA, envir = .GlobalEnv);
-  }
+  ga_tokens <- httr::oauth2.0_token(ga, myapp, scope=c(
+      "https://www.googleapis.com/auth/analytics",
+      "https://www.googleapis.com/auth/analytics.edit"
+    ), 
+    cache = FALSE #"./tools/httr-oauth"
+  );
 
   return(getToken(ga_tokens, "access_token"));
 }
 
-### Retrieve token
 getToken = function(tokens = NULL, token = "access_token", global_var = "GA") {
   if(is.null(tokens)) {
     GA = get("GA", envir = .GlobalEnv);

@@ -1,3 +1,9 @@
+#' @title analytics.accounts
+#' @description List accounts available to OAuth user
+#' @param accessToken String OAuth token
+#' @import data.table
+#' @export
+### 
 analytics.accounts = function (accessToken) {
   query <- paste(
     "https://content.googleapis.com/analytics/v3/management/accountSummaries", 
@@ -15,6 +21,13 @@ analytics.accounts = function (accessToken) {
   return(accts);
 }
 
+#' @title analytics.account.profiles
+#' @description List profiles available to account
+#' @param account String OAuth token
+#' @param context Boolean provide extra context
+#' 
+#' @export
+### 
 analytics.account.profiles = function(account, context = FALSE) {
   profileList = list( account = account$name, profiles = data.frame()  );
   profileIndex = 1;

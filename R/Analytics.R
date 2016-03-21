@@ -1,22 +1,42 @@
 ###
-# libaries: rjson, rlist, httr
-#
 #' @title Main function for connection to Google Analytics
+#' @description Wrapper for Analytics functions
+#' @param json String file location to load JSON data from
+#' @param jsonText String json representation
+#' @param set_global Boolean
+#' @param set_global_var String to use for name of the global
+#' 
+#' @include AnalyticsConnect.R
+#' @include AnalyticsListDimensions.R
 #' @export
-GA = function(json = NULL, jsonText = NULL, set_global = FALSE, set_global_var = "GA") {
+GA = function(
+  json = NULL, 
+  jsonText = NULL, 
+  set_global = FALSE, 
+  set_global_var = "GA"
+) {
   GA_object(json, jsonText, set_global, set_global_var);
 }
 
-GA_object = function(json = NULL, jsonText = NULL, set_global = FALSE, set_global_var = "GA") {
+GA_object = function(
+  json = NULL, 
+  jsonText = NULL, 
+  set_global = FALSE, 
+  set_global_var = "GA"
+) {
   self <- local({
 
-    connection <- analytics.connect(json, jsonText, set_global, set_global_var);
+    connection <- analytics.connect(json, jsonText);
 
-    reconnect <- function(json = NULL, jsonText = NULL, set_global = FALSE, set_global_var = "GA", useCache = FALSE) {
+    reconnect <- function(
+      json = NULL,
+      jsonText = NULL,
+      useCache = FALSE
+    ) {
       if(useCache == TRUE && !is.null(connection)) {
         return(connection);
       } else {
-        connection <- analytics.connect(json, jsonText, set_global, set_global_var);
+        connection <- analytics.connect(json, jsonText);
       }
     };
     
@@ -27,11 +47,21 @@ GA_object = function(json = NULL, jsonText = NULL, set_global = FALSE, set_globa
     dimensions <- NULL;
     
     getDimensions <- function(account = NULL, accountID = NULL, webID = NULL) {
-      dimensions = analytics.list.dimensions(connection, account = account, accountID = accountID, webID = webID);
+      dimensions = analytics.list.dimensions(
+        accessToken = connection, 
+        account = account, 
+        accountID = accountID, 
+        webID = webID
+      );
+
       return(dimensions);
     };
 
-    save.results <- function(x, file = "./data/saved.csv", type = tools::file_ext(file)) {
+    save.results <- function(
+      x, 
+      file = "./data/saved.csv", 
+      type = tools::file_ext(file)
+    ) {
       analytics.results.save(x, file, type);
     };
     
@@ -40,32 +70,30 @@ GA_object = function(json = NULL, jsonText = NULL, set_global = FALSE, set_globa
       account = NULL,
       accountID = NULL, 
       webID = NULL,
-      ids = "113385228",
+      ids = NULL,
       startDate = "30daysAgo",
       endDate = "today",
-      dims = NULL, #c("ga:eventLabel"),
+      dimensions = NULL, #c("ga:eventLabel"),
       metrics = c("ga:eventValue"),
       columnNames = dimensions[,1],
       uniqueBy = NULL,
       startIndex = 1,
-      maxResults = 1000,
+      maxResults = 20000,
       appendEvents = TRUE
     ) {
-      if(is.null(dims)) {
-        dims = getDimensions(account, accountID, webID);
-        print(dims);
-        return(analytics.query(accessToken,ids,startDate,endDate,dims = levels(dims$id),metrics,columnNames,uniqueBy,startIndex,maxResults, appendEvents));
-      } else {
-        return(analytics.query(accessToken,ids,startDate,endDate,dims = dims,metrics,columnNames,uniqueBy,startIndex,maxResults, appendEvents));
-      }
-
+      return(
+        analytics.query(
+          accessToken,ids,startDate,endDate,dimensions = dimensions,
+          metrics,columnNames,uniqueBy,startIndex,maxResults, appendEvents
+        )
+      );
     };
 
     accounts <- analytics.accounts(connection);
 
-    getAccounts <- function(accessToken = connection) {
-      return(analytics.accounts(accessToken));
-    };
+    #getAccounts <- function(accessToken = connection) {
+    #  return(analytics.accounts(accessToken));
+    #};
     
     accountProfiles <- function(account) {
       return(analytics.account.profiles(account));

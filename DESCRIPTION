@@ -7,19 +7,32 @@ Description: Provides functions that allow for convenient working
 Version: 0.1.0
 Date: 2015-12-17
 Authors@R: c(person("Cody L Marquart", role = c("aut", "cre"), email="cody.marquart@wisc.edu"))
-Depends: R (>= 3.1.0)
+Depends:
+    R (>= 3.1.0),
+    data.table,
+    rjson,
+    httr
 License: GPL (>= 2)
 LazyData: true
 Packaged: 2015-12-17 12:02:36 UTC; clmarquart
 Author: Cody L Marquart [aut, cre]
 Maintainer: Cody L Marquart <cody.marquart@wisc.edu>
 NeedsCompilation: no
-Imports: devtools,
-    httr,
-    rjson,
-    rlist,
-    data.table
-Suggests: testthat,
+Imports:
+    rlist
+Suggests:
+    testthat,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+RoxygenNote: 5.0.1
+Collate:
+    'AnalyticsListDimensions.R'
+    'AnalyticsConnect.R'
+    'Analytics.R'
+    'AnalyticsAccounts.R'
+    'AnalyticsMunging.R'
+    'AnalyticsQuery.R'
+    'AnalyticsSave.R'
+    'DateUtilities.R'
+    'ms.to.date.R'

@@ -10,8 +10,8 @@ analytics.results.save = function(x, file = "./data/saved.csv", type = tools::fi
   }
  
   if(type == "csv") {
-    write.csv(toSave, file = file, fileEncoding = "UTF-8")
+    write.csv(toSave, file = file, fileEncoding = "UTF-8");
   } else {
-    list.save(toSave, file, type)
+    rlist::list.save(toSave, file, type);
   }
 }

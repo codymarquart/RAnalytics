@@ -1,9 +1,15 @@
-### Find all of the custom dimensions associated with the 
-### account.
-#listCustomDimensions
-#accountID = "39236781", webID = "UA-39236781-3"
-#ga$accounts()[[2]]$id, ga$accounts()[[2]]$webProperties[[4]]$id
-#
+#' @title Analytics account dimenstions
+#' @description Find all of the custom dimensions associated with the 
+#' account.
+#'
+#' @param accessToken OAUTH Token
+#' @param account Full account to pull ID and webID from
+#' @param accountID account ID string
+#' @param webID web ID string
+#' @param startIndex Integer
+#' @param maxResults Integer
+#' 
+#' @export
 analytics.list.dimensions = function (accessToken, account = NULL, accountID = NULL, webID = NULL, startIndex = 1, maxResults = 10) {
   if(!is.null(account)) {
     if(is.null(accountID)) {
@@ -24,12 +30,9 @@ analytics.list.dimensions = function (accessToken, account = NULL, accountID = N
     'max-results'= maxResults,
     'access_token'= accessToken #ga_token$credentials$access_token
   );
-  print(query)
+
   req <- httr::GET(query, query = queryList);
   httr::stop_for_status(req);
-
-  #return(content(req)$items);
-  #return(rownames(list.table(content(req)$items, id)));
 
   dims = httr::content(req)$items;
 
