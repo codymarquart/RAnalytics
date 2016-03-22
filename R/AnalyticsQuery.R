@@ -13,7 +13,8 @@
 #' @param startIndex Integer index of which to start
 #' @param maxResults Integer for total number of results
 #' @param appendEvents Boolean
-#' 
+#' @param accountID String
+#' @param webID String
 #' @export
 analytics.query = function(
   accessToken = NULL,
@@ -26,7 +27,9 @@ analytics.query = function(
   uniqueBy = NULL,
   startIndex = 1,
   maxResults = 10000,
-  appendEvents = TRUE
+  appendEvents = TRUE,
+  accountID = NULL,
+  webID = NULL
 ) {
   
   if(is.null(accessToken)){
@@ -38,8 +41,6 @@ analytics.query = function(
     }
   }
   
-  accountID = NULL
-  webID = NULL
   if(is.null(ids)) {
     acctsAll = analytics.accounts(accessToken = accessToken);
     acctTable = as.data.frame(unlist(unique(acctsAll$name)))
@@ -56,12 +57,12 @@ analytics.query = function(
     
     print(acctNames[as.integer(propertyChoice),]$profiles[[1]])
     viewChoice = as.integer(readline(prompt = "Which view: "));
-    
+
     ids = acctNames[as.integer(propertyChoice),]$profiles[[1]]$id[viewChoice]
-    
+
     print(paste("ID selected: ", ids))
   }
-  
+
   if(is.null(ids)) {
     print("FAILED: No ID provided. Use https://ga-dev-tools.appspot.com/account-explorer/");
     return();
@@ -69,13 +70,18 @@ analytics.query = function(
   ids = paste("ga:", ids, sep = "");
   
   dimensionsAll = NULL
-  if(dimensions == TRUE) {
+  if(is.logical(dimensions) && dimensions == TRUE) {
     dimensionsAll = analytics.list.dimensions(accessToken = accessToken, accountID = accountID, webID = webID)
     dimensions = dimensionsAll$id
   }
-  
+
   if(appendEvents == TRUE) {
     dimensions = append(levels(factor(dimensions)), c("ga:eventAction", "ga:eventLabel", "ga:eventCategory"));
+  }
+  if(is.null(columnNames)) {
+    #assign("D", dimensionsAll$name, envir = .GlobalEnv)
+    columnNames = dimensionsAll
+    print(columnNames)
   }
 
   start = 1;
@@ -87,7 +93,9 @@ analytics.query = function(
     result$dimensionsUsed = rlist::list.cases(append(uniqueBy, levels(factor(dimensions[start:(start+(6 - length(uniqueBy)))]))))
     start = start + (7 - length(uniqueBy));
   
-    print(paste("Querying dimensions:", result$dimensionsUsed));
+    print("Querying dimensions:")
+    print(result$dimensionsUsed);
+    print("")
     queryList = list(
       'ids'= ids,
       'start-date' = startDate,
@@ -95,6 +103,7 @@ analytics.query = function(
       'dimensions'= paste(result$dimensionsUsed, collapse=","),
       'metrics'= paste(metrics, collapse=","),
       'start-index'= startIndex,
+      'include-empty-rows' = TRUE,
       'max-results'= maxResults,
       'access_token'= accessToken
     );
@@ -121,8 +130,13 @@ analytics.query = function(
     print(paste("Merging the results by: ", uniqueBy));
     mergedResults = NULL;
     for (r in results) {
-      if(is.null(mergedResults)) { mergedResults = r$data; }
-      else { mergedResults = merge(mergedResults, r$data, by = uniqueBy); }
+      if(is.null(mergedResults)) { 
+        print("Setting initial results.");
+        mergedResults = r$data; 
+      }
+      else {
+        mergedResults = merge(mergedResults, r$data, by = uniqueBy, all.y = TRUE, all.x = TRUE)
+      }
     }
     results$merged = mergedResults;
   

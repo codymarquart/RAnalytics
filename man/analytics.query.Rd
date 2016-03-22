@@ -7,7 +7,8 @@
 analytics.query(accessToken = NULL, ids = NULL, startDate = "30daysAgo",
   endDate = "today", dimensions = c("ga:eventAction"),
   metrics = c("ga:eventValue"), columnNames = NULL, uniqueBy = NULL,
-  startIndex = 1, maxResults = 10000, appendEvents = TRUE)
+  startIndex = 1, maxResults = 10000, appendEvents = TRUE,
+  accountID = NULL, webID = NULL)
 }
 \arguments{
 \item{accessToken}{OAUTH Token}
@@ -31,6 +32,10 @@ analytics.query(accessToken = NULL, ids = NULL, startDate = "30daysAgo",
 \item{maxResults}{Integer for total number of results}
 
 \item{appendEvents}{Boolean}
+
+\item{accountID}{String}
+
+\item{webID}{String}
 }
 \description{
 Query the Analytics API showing the first 10,000 results from

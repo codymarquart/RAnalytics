@@ -27,7 +27,7 @@ gaAccounts = analytics.accounts(gaToken);
 ###
 ## Step 3: Obtain the custom dimensions 
 ```
-gaDims = ga$getDimensions(accountID = ga$accounts[12]$accountID, webID = ga$accounts[12]$id)
+gaDims = ga$getDimensions(accountID = ga$accounts[12]$accountID, webID = ga$accounts[12]$id);
 ```
 
 ###
