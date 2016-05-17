@@ -105,7 +105,8 @@ analytics.query = function(
       'start-index'= startIndex,
       'include-empty-rows' = TRUE,
       'max-results'= maxResults,
-      'access_token'= accessToken
+      'access_token'= accessToken,
+      'filters' = "ga:eventAction!=mouseenter"
     );
 
     result$req <- httr::GET(queryURL, query = queryList);
@@ -131,10 +132,11 @@ analytics.query = function(
     mergedResults = NULL;
     for (r in results) {
       if(is.null(mergedResults)) { 
-        print("Setting initial results.");
+        print("Setting initial merged results.");
         mergedResults = r$data; 
       }
       else {
+        print("Merging results.")
         mergedResults = merge(mergedResults, r$data, by = uniqueBy, all.y = TRUE, all.x = TRUE)
       }
     }
