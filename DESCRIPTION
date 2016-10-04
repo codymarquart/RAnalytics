@@ -4,7 +4,7 @@ Name: RAnalytics
 Title: Connect to Google Analytics API for data analysis
 Description: Provides functions that allow for convenient working
     with the Google Analytics API.
-Version: 0.1.0
+Version: 0.1.1
 Date: 2015-12-17
 Authors@R: c(person("Cody L Marquart", role = c("aut", "cre"), email="cody.marquart@wisc.edu"))
 Depends:
