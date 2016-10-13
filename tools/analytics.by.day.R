@@ -7,4 +7,5 @@ analytics.by.day = function(start = "2015/12/1", end = format(Sys.time(), "%Y/%m
   View(result$merged)
 }
 
+dims = analytics.list.dimensions(gaToken, accountID = "39236781", webID = "UA-39236781-3")
 result = analytics.query(accessToken = gaToken, dimensions = dims$id, startDate = "2016-09-12", endDate = "2016-09-12", uniqueBy = uniqueBy, columnNames = dims, accountID = "39236781", webID = "UA-39236781-3")
